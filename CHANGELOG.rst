@@ -2,6 +2,19 @@
 Changelog for package ur_description
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+2.1.5 (2024-04-25)
+------------------
+* Fix multi-line strings in DeclareLaunchArgument ( backport of `#140 <https://github.com/UniversalRobots/Universal_Robots_ROS2_Description/issues/140>`_) (`#153 <https://github.com/UniversalRobots/Universal_Robots_ROS2_Description/issues/153>`_)
+* Fix default calibration file for UR30 (`#148 <https://github.com/UniversalRobots/Universal_Robots_ROS2_Description/issues/148>`_)
+* Contributors: Matthijs van der Burgh, Felix Exner
+
+2.1.4 (2024-04-04)
+------------------
+* Update Graphical Documentation license to version 1.01 (`#143 <https://github.com/UniversalRobots/Universal_Robots_ROS2_Description/issues/143>`_)
+* Add UR30 model (`#142 <https://github.com/UniversalRobots/Universal_Robots_ROS2_Description/issues/142>`_)
+* Make sure the UR5 models are actually standing on the ground (`#136 <https://github.com/UniversalRobots/Universal_Robots_ROS2_Description/pull/136>`_)
+* Contributors: Felix Exner, RobertWilbrandt, Vincenzo Di Pentima
+
 2.1.3 (2023-12-18)
 ------------------
 * Make ros2_control tag generation optional in macro (`#121 <https://github.com/UniversalRobots/Universal_Robots_ROS2_Description/issues/121>`_)
