@@ -252,6 +252,8 @@
         <origin xyz="0 0 0" rpy="0 0 0" />
       </xacro:cylinder_inertial>
     </link>
+    
+    
     <link name="${tf_prefix}wrist_3_link">
 	  <xacro:get_visual_params name="wrist_3" type="visual_offset"/>
       <visual>
@@ -270,6 +272,49 @@
         <origin xyz="0.0 0.0 ${-0.5 * wrist_3_inertia_length}" rpy="0 0 0" />
       </xacro:cylinder_inertial>
     </link>
+
+    <!-- zivid camera defined as a link-->
+    <link name="${tf_prefix}zivid_camera">
+      <visual>
+        <origin xyz="0.071 0 -0.035" rpy="0 ${-8.5/180} 0" />
+        <geometry>
+          <box size="0.226 0.089 0.165" />
+        </geometry>
+        <material name='black' >
+          <color rgba="0.8 0.8 0.8 0.6" />
+        </material>  
+      </visual>
+      <collision>
+        <origin xyz="0.071 0 -0.035" rpy="0 ${-8.5/180} 0"  />
+        <geometry>
+          <box size="0.236 0.099 0.175"  />
+        </geometry>
+      </collision>
+			<inertial>
+    		<mass value="2"/>
+   			<inertia ixx="0.0056" ixy="0.0" ixz="0.0" iyy="0.0056" iyz="0.0" izz="0.0056"/>
+  		</inertial>
+    </link>
+
+    <!-- base EE for insertion-->
+    <link name="${tf_prefix}EE_insertion_base">
+      <visual>
+        <origin xyz="0 0 -0.08425" rpy="0 0 0" />
+        <geometry>
+          <cylinder radius="0.01" length="0.1685"/>
+        </geometry>
+        <material name='green' >
+          <color rgba="0 1 0 0.5" />
+        </material>  
+      </visual>
+      <collision>
+        <origin xyz="0 0 -0.0842" rpy="0 0 0" />
+        <geometry>
+          <cylinder radius="0.015" length="0.1685"/>
+        </geometry>
+      </collision>
+    </link>
+
 
     <!-- base_joint fixes base_link to the environment -->
     <joint name="${tf_prefix}base_joint" type="fixed">
@@ -387,16 +432,51 @@
     <joint name="${tf_prefix}wrist_3-flange" type="fixed">
       <parent link="${tf_prefix}wrist_3_link" />
       <child link="${tf_prefix}flange" />
-      <origin xyz="0 0 0" rpy="0 ${-pi/2.0} ${-pi/2.0}" />
+      <!-- <origin xyz="0 0 0" rpy="0 ${-pi/2.0} ${-pi/2.0}" />  original configuration, why is the flange rotated??-->
+      <origin xyz="0 0 0" rpy="0 0 0" />
     </joint>
 
+    <!-- Original tool0 frame-->
     <!-- ROS-Industrial 'tool0' frame - all-zeros tool frame -->
-    <link name="${tf_prefix}tool0"/>
-    <joint name="${tf_prefix}flange-tool0" type="fixed">
+    
+    <!-- <link name="${tf_prefix}tool0"/>
+    <joint name="${tf_prefix}flange-tool0" type="fixed"> -->
       <!-- default toolframe - X+ left, Y+ up, Z+ front -->
-      <origin xyz="0 0 0" rpy="${pi/2.0} 0 ${pi/2.0}"/>
+      <!-- <origin xyz="0 0 0" rpy="${pi/2.0} 0 ${pi/2.0}"/>
       <parent link="${tf_prefix}flange"/>
       <child link="${tf_prefix}tool0"/>
+    </joint>
+    -->
+
+    <!-- tool0 frame modified to fit the EE_insertion tool-->
+    <link name="${tf_prefix}tool0"/>
+    <joint name="${tf_prefix}EE_insertion_tool-tool0" type="fixed">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <parent link="${tf_prefix}EE_insertion_base"/>
+      <child link="${tf_prefix}tool0"/>
+    </joint>
+
+    <!-- joint between the flange and the zivid camera-->
+    <joint name="${tf_prefix}flange-zivid_camera" type="fixed">
+      <!-- <origin xyz=" 0.071 0.104 0.059 " rpy="0 ${12.5/180} ${pi}"/> -->
+      <!-- <origin xyz=" 0.06576 0.09706 ${0.1685-0.10786}" rpy="-0.0177 -0.1471 3.1098"/> --> <!-- tf matrix from zivid eye-in-hand calibration -->
+      <origin xyz=" 0.06576 0.09706 ${0.1685-0.10786}" rpy="0 ${(8.5*pi)/180} ${pi}"/>
+      <parent link="${tf_prefix}flange"/>
+      <child link="${tf_prefix}zivid_camera"/>
+    </joint>
+
+    <!-- joint between the flange and the EE insertion tool-->
+    <joint name="${tf_prefix}flange-EE_insertion_tool" type="fixed">
+      <origin xyz=" 0.0 0.0 0.1685 " rpy="0 0 0"/>
+      <parent link="${tf_prefix}flange"/>
+      <child link="${tf_prefix}EE_insertion_base"/>
+    </joint>
+
+    <link name="${tf_prefix}zivid_camera_frame"/>
+    <joint name="${tf_prefix}zivid_camera-zivid_camera_frame" type="fixed">
+      <origin xyz=" 0 0 0 " rpy="0 0 0"/>
+      <parent link="${tf_prefix}zivid_camera"/>
+      <child link="${tf_prefix}zivid_camera_frame"/>
     </joint>
 
   </xacro:macro>
